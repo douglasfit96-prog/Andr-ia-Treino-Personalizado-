@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Plano de Treino – Andréia (Hipertrofia + Resistência)</title>
+<style>
+  :root{
+    --bg:#0f172a;        /* slate-900 */
+    --panel:#111827;     /* gray-900 */
+    --muted:#94a3b8;     /* slate-400 */
+    --text:#e5e7eb;      /* gray-200 */
+    --accent:#22d3ee;    /* cyan-400 */
+    --accent2:#f472b6;   /* pink-400 */
+    --ok:#34d399;        /* green-400 */
+    --warn:#fbbf24;      /* amber-300 */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:linear-gradient(180deg,#0b1225,#0f172a 20%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif}
+  header{
+    position:sticky;top:0;z-index:20;
+    backdrop-filter: blur(6px);
+    background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(15,23,42,.70));
+    border-bottom:1px solid #1f2937;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:18px}
+  h1{margin:8px 0 0 0;font-size:clamp(22px,3.5vw,34px);letter-spacing:.3px}
+  .sub{color:var(--muted);font-size:14px;margin-top:4px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .day{
+    background: radial-gradient(120% 140% at 0% 0%, rgba(34,211,238,.15), transparent 60%) , 
+               radial-gradient(120% 140% at 100% 100%, rgba(244,114,182,.12), transparent 60%),
+               #0c1222;
+    border:1px solid #1f2937;
+    padding:16px;border-radius:16px;box-shadow: 0 8px 30px rgba(0,0,0,.25);
+  }
+  .day h2{margin:0 0 10px 0;font-size:18px;display:flex;align-items:center;gap:8px}
+  .chip{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid #1f2937;color:var(--muted)}
+  .exercise{display:grid;gap:10px;margin:12px 0;padding:12px;border:1px dashed #334155;border-radius:12px;background:#0b1325}
+  .exercise h3{margin:0;font-size:16px}
+  .meta{font-size:13px;color:var(--muted)}
+  /* Estilo para o iframe do YouTube */
+  .video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid #334155;
+  }
+  .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  details{border-radius:10px;overflow:hidden}
+  details>summary{
+    cursor:pointer;list-style:none;padding:8px 10px;border:1px solid #2a3347;border-radius:10px;
+    background:linear-gradient(180deg,#0f1b33,#0b1427);
+  }
+  details[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+  .tips{font-size:13px;color:var(--muted);margin:6px 0}
+  .footer{opacity:.75;font-size:12px;margin:18px 0}
+  .legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .legend span{border:1px solid #334155;border-radius:999px;padding:2px 8px;font-size:12px}
+  .pill-ok{border-color:rgba(52,211,153,.35);color:var(--ok)}
+  .pill-warn{border-color:rgba(251,191,36,.35);color:var(--warn)}
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  .search{flex:1;min-width:240px}
+  input,select,button{background:#0b1429;color:var(--text);border:1px solid #334155;border-radius:10px;padding:10px}
+  button{cursor:pointer}
+  .badge{font-size:12px;color:var(--accent)}
+  .muted{color:var(--muted)}
+  .howto{border:1px solid #334155;border-radius:14px;padding:12px;background:#0b1429;margin:8px 0}
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Plano de Treino – Andréia</h1>
+    <div class="sub">Objetivo: <strong>Ganho de massa + resistência</strong> • Estrutura com <span class="badge">players de vídeo</span> para cada exercício</div>
+    <div class="toolbar">
+      <input class="search" id="q" placeholder="Filtrar exercícios (ex: agachamento, prancha, bíceps)">
+      <select id="diaSel" title="Ir para o dia">
+        <option value="">Ir para o dia…</option>
+        <option value="#seg">Segunda (Funcional)</option>
+        <option value="#ter">Terça (Inferiores)</option>
+        <option value="#qua">Quarta (Funcional)</option>
+        <option value="#qui">Quinta (Superiores)</option>
+        <option value="#sex">Sexta (Resistência + Core)</option>
+        <option value="#sab">Sábado (Opcional)</option>
+        <option value="#dom">Domingo (Opcional)</option>
+      </select>
+      <button id="toggle">Expandir/Recolher todos</button>
+    </div>
+    <div class="legend">
+      <span class="pill-ok">Hipertrofia leve</span>
+      <span class="pill-ok">Resistência</span>
+      <span class="pill-warn">Atenção à técnica</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="howto">
+    <strong>Instruções de uso:</strong>
+    <ol class="muted">
+      <li>Os vídeos de demonstração agora são incorporados diretamente do YouTube e requerem conexão com a internet.</li>
+      <li>Clique no botão de play para assistir à execução correta de cada exercício.</li>
+    </ol>
+    <div class="tips">Os vídeos foram selecionados com foco na **execução correta** para auxiliar na sua técnica.</div>
+  </section>
+
+  <!-- SEGUNDA -->
+  <article class="day" id="seg">
+    <h2>Segunda-feira <span class="chip">Funcional</span></h2>
+    <p class="muted">Finalize com 3 séries de <strong>prancha</strong> (30–60s) e <strong>agachamento isométrico</strong> (30–45s).</p>
+
+    <details open>
+      <summary><strong>Bloco Funcional – Corpo todo</strong> • 3–4 voltas • 40–60s de descanso entre voltas</summary>
+      <div class="exercise" data-name="agachamento com halteres">
+        <h3>Agachamento com halteres</h3>
+        <div class="meta">3×15 • foco em amplitude e postura</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/3wnMTEVx5-I" title="Agachamento com halteres" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="remada elástico">
+        <h3>Remada com elástico</h3>
+        <div class="meta">3×12–15 • cotovelos fechados</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/j9KCjIBCG8k" title="Remada com elástico" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="afundo alternado">
+        <h3>Afundo alternado</h3>
+        <div class="meta">3×12 por perna</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/jUWT5E6gAso" title="Afundo alternado" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="burpee low impact">
+        <h3>Burpee (low impact)</h3>
+        <div class="meta">3×10 • opção sem salto</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/iUL2tndomms" title="Burpee (low impact)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    </details>
+  </article>
+
+  <!-- TERÇA -->
+  <article class="day" id="ter">
+    <h2>Terça-feira <span class="chip">Força – Inferiores</span></h2>
+    <details open>
+      <summary><strong>Inferiores</strong> • Carga moderada/alta • 60–90s descanso</summary>
+
+      <div class="exercise" data-name="agachamento livre">
+        <h3>Agachamento livre</h3>
+        <div class="meta">4×10</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/LhG0Xi6zWNY" title="Agachamento livre" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="cadeira extensora">
+        <h3>Cadeira extensora</h3>
+        <div class="meta">3×12</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/729-1v-822E" title="Cadeira extensora" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="mesa flexora">
+        <h3>Mesa flexora</h3>
+        <div class="meta">3×12</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/ZdhQ5Ye71ok" title="Mesa flexora" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="stiff">
+        <h3>Stiff com halteres</h3>
+        <div class="meta">3×10</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/g_53023456I" title="Stiff com halteres" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="elevacao de quadril">
+        <h3>Elevação de quadril</h3>
+        <div class="meta">4×15</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/g-53023456I" title="Elevação de quadril" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="panturrilha em pé">
+        <h3>Panturrilha em pé</h3>
+        <div class="meta">4×20</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/3Q95w23456I" title="Panturrilha em pé" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="tips">Finalizar: 10 min de escada ou caminhada inclinada.</div>
+    </details>
+  </article>
+
+  <!-- QUARTA -->
+  <article class="day" id="qua">
+    <h2>Quarta-feira <span class="chip">Funcional</span></h2>
+    <details open>
+      <summary><strong>Funcional com minibandas/caneleiras</strong> • 3–4 voltas</summary>
+
+      <div class="exercise" data-name="good morning elastico">
+        <h3>Good Morning com elástico</h3>
+        <div class="meta">3×15</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/_V0WOAL0_k0" title="Good Morning com elástico" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="agachamento sumo">
+        <h3>Agachamento sumô</h3>
+        <div class="meta">3×15</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/V4A0QrhcBLk" title="Agachamento sumô" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="deslocamento lateral banda">
+        <h3>Deslocamento lateral com banda</h3>
+        <div class="meta">3×12 por lado</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/9SQ3EOot_sg" title="Deslocamento lateral com banda" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="prancha">
+        <h3>Prancha</h3>
+        <div class="meta">3×30–60s</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/Yu0wjtD5FkU" title="Prancha" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    </details>
+  </article>
+
+  <!-- QUINTA -->
+  <article class="day" id="qui">
+    <h2>Quinta-feira <span class="chip">Força – Superiores</span></h2>
+    <details open>
+      <summary><strong>Superiores</strong> • Carga moderada • 60–90s descanso</summary>
+
+      <div class="exercise" data-name="supino reto flexao">
+        <h3>Supino reto <span class="muted">ou</span> Flexão de braço</h3>
+        <div class="meta">4×10</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/fG_03xSzT2s" title="Supino reto ou Flexão de braço" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="remada curvada">
+        <h3>Remada curvada</h3>
+        <div class="meta">3×12</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/jhFoLNInyvs" title="Remada curvada" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="desenvolvimento ombro">
+        <h3>Desenvolvimento de ombro</h3>
+        <div class="meta">3×12</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/eufDL9MmF8A" title="Desenvolvimento de ombro" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="rosca direta">
+        <h3>Rosca direta</h3>
+        <div class="meta">3×12</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/nUSmTWGzOqA" title="Rosca direta" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="triceps banco corda">
+        <h3>Tríceps no banco/corda</h3>
+        <div class="meta">3×12</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/F0x0R3EJ2V8" title="Tríceps no banco/corda" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="tips">Finalizar: prancha lateral 3×30s por lado.</div>
+    </details>
+  </article>
+
+  <!-- SEXTA -->
+  <article class="day" id="sex">
+    <h2>Sexta-feira <span class="chip">Resistência + Core</span></h2>
+    <details open>
+      <summary><strong>Circuito</strong> • 3–4 voltas • 40s de descanso entre voltas</summary>
+
+      <div class="exercise" data-name="agachamento salto">
+        <h3>Agachamento + salto</h3>
+        <div class="meta">15 repetições</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/A7WRWEb5fvU" title="Agachamento + salto" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="flexao de braço">
+        <h3>Flexão de braço</h3>
+        <div class="meta">10 repetições</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/GOj4TMPVuZg" title="Flexão de braço" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="abdominal canivete">
+        <h3>Abdominal canivete</h3>
+        <div class="meta">15 repetições</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/nUSmTWGzOqA" title="Abdominal canivete" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="corda corrida estacionaria">
+        <h3>Corda ou corrida estacionária</h3>
+        <div class="meta">1 minuto</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/A7WRWEb5fvU" title="Corda ou corrida estacionária" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise" data-name="prancha isometrica">
+        <h3>Prancha isométrica</h3>
+        <div class="meta">1 minuto</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/1rNSIPr7pM4" title="Prancha isométrica" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    </details>
+  </article>
+
+  <!-- SABADO -->
+  <article class="day" id="sab">
+    <h2>Sábado <span class="chip">Opcional – Cardio leve</span></h2>
+    <p class="muted">Caminhada, bike, dança ou trilha por 30–60 min. Use intensidade confortável.</p>
+  </article>
+
+  <!-- DOMINGO -->
+  <article class="day" id="dom">
+    <h2>Domingo <span class="chip">Opcional – Descanso ativo</span></h2>
+    <p class="muted">Alongamentos, mobilidade, ioga leve. Escute o corpo; descanso completo se necessário.</p>
+  </article>
+
+  <p class="footer">Dica de progressão: quando completar todas as séries com técnica boa e esforço 7–8/10, aumente 2–5% de carga ou +2 repetições. Mantenha ingestão proteica ~1,6 g/kg e hidratação 2,5–3 L/dia.</p>
+</main>
+
+<script>
+  // Filtro por texto
+  const q = document.getElementById('q');
+  q.addEventListener('input', (e)=>{
+    const term = e.target.value.trim().toLowerCase();
+    document.querySelectorAll('.exercise').forEach(ex=>{
+      const name = (ex.dataset.name||ex.querySelector('h3')?.textContent||'').toLowerCase();
+      ex.style.display = name.includes(term) ? '' : 'none';
+    });
+  });
+
+  // Navegar para o dia
+  const sel = document.getElementById('diaSel');
+  sel.addEventListener('change', ()=>{
+    if(sel.value){ location.hash = sel.value; }
+  });
+
+  // Expandir/Recolher todos
+  const btn = document.getElementById('toggle');
+  let expanded = true;
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('details').forEach(d=> d.open = !expanded);
+    expanded = !expanded;
+  });
+</script>
+</body>
+</html>
